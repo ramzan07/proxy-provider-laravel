@@ -40,9 +40,13 @@ class ScraperCommand extends Command
     public function handle()
     {
         $client = new Client(HttpClient::create(['timeout' => 60]));
-        $crawler = $client->request('GET', 'https://www.symfony.com/blog/');
-        $crawler->filter('div > div > h2 > a')->each(function ($node) {
-            print $node->text()."\n";
-        });
+        $crawler = $client->request('GET', 'https://www.xroxy.com/proxylist.htm/');
+        // $crawler->filter('tr > td > a')->each(function ($node) {
+        //     print $node->text()."</br>";
+        // });
+        foreach ($crawler->filterXpath('//*[@id="content"]/table[1]/tbody/tr[4]/td[1]/a') as $text) {
+            echo $text->nodeValue , "\n";
+        }
+        echo "nothing";
     }
 }

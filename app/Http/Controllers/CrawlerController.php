@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+use Sunra\PhpSimple\HtmlDomParser;
+use Artisan;
+use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlerController extends Controller
 {
@@ -11,9 +15,27 @@ class CrawlerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        echo "welcome";
+        //Artisan::call('Scrapper:start');
+        $url = $request->get('url');
+        $html = file_get_contents($url);
+
+        // $client = new client();
+        // $response  = $client->request('GET', $url);
+        // $status = $response->getStatusCode();
+        // if($status == 200){
+        //     $html = $response->getBody();
+        //     $dom = HtmlDomParser::str_get_html( $html );
+        //     dd($dom);
+        $crawler = new Crawler($html);
+        // foreach ($crawler as $domElement) {
+        //     var_dump($domElement->nodeName);
+        // }
+        //$crawler = $crawler->filter('tr > td');
+        $crawler = $crawler->filterXPath('/html/body/div/div[2]/table[1]/tbody/tr[4]/td[1]/a');
+        dd($crawler);
+
     }
 
     /**
