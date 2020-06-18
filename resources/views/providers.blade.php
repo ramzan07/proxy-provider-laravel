@@ -55,11 +55,21 @@
     <thead>
     <!-- <a href="#" class="btn btn-primary btn-xs pull-right"><b>+</b> Add new categories</a> -->
         <tr>
-            <th class="text-center">Sr.</th>
-            <th class="text-center">Name</th>
-            <!-- <th>Source</th> -->
-            <th class="text-center">Action</th>
+            <th class="text-center">Title</th>
+            <th class="text-center">URL</th>
+            <th class="text-center">Last update</th>
+            <th class="text-center">Last attempt</th>
         </tr>
     </thead>
+    <tbody>
+      @foreach($providers as $provider)
+      <tr>
+            <td class="text-center">{{$provider['title']}}</td>
+            <td class="text-center">{{$provider['url']}}</td>
+            <td class="text-center">{{$provider['last_update_date']}}</td>
+            <td class="text-center">{{$provider['updated_at']}}</td>
+        </tr>
+      @endforeach
+    </tbody>
     </table>
 @endsection

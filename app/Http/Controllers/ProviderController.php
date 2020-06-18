@@ -8,7 +8,8 @@ class ProviderController extends Controller
 {
     public function index()
     {
-        return view('providers');
+        $providers = \App\Models\Provider::getProviders();
+        return view('providers', compact('providers'));
 
     }
 }
