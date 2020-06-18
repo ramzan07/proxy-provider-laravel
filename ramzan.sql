@@ -106,3 +106,5 @@ ALTER TABLE `settings`
 ALTER TABLE `settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
+
+INSERT INTO `providers` (`id`, `title`, `url`, `status`, `last_update_date`, `last_attempt_date`, `created_at`, `updated_at`) VALUES (NULL, 'XROXY Proxy Lists', 'http://www.xroxy.com', '1', NULL, NULL, current_timestamp(), NULL);
