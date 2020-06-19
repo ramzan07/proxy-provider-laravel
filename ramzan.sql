@@ -108,3 +108,59 @@ ALTER TABLE `settings`
 COMMIT;
 
 INSERT INTO `providers` (`id`, `title`, `url`, `status`, `last_update_date`, `last_attempt_date`, `created_at`, `updated_at`) VALUES (NULL, 'XROXY Proxy Lists', 'http://www.xroxy.com', '1', NULL, NULL, current_timestamp(), NULL);
+
+
+-- phpMyAdmin SQL Dump
+-- version 5.0.2
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Jun 19, 2020 at 02:42 AM
+-- Server version: 10.4.11-MariaDB
+-- PHP Version: 7.4.6
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+--
+-- Database: `db_proxyproviders`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `proxies`
+--
+
+CREATE TABLE `proxies` (
+  `id` int(11) NOT NULL,
+  `provider_id` int(11) NOT NULL,
+  `ip` varchar(256) DEFAULT NULL,
+  `port` int(11) DEFAULT NULL,
+  `date_last_pub` timestamp NULL DEFAULT NULL,
+  `last_found_date` timestamp NULL DEFAULT NULL,
+  `first_found_date` timestamp NULL DEFAULT NULL,
+  `last_fun_date` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `proxies`
+--
+ALTER TABLE `proxies`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `proxies`
+--
+ALTER TABLE `proxies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
