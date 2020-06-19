@@ -59,6 +59,7 @@
             <th class="text-center">URL</th>
             <th class="text-center">Last update</th>
             <th class="text-center">Last attempt</th>
+            <th class="text-center">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -68,6 +69,7 @@
             <td class="text-center">{{$provider['url']}}</td>
             <td class="text-center">{{$provider['last_update_date']}}</td>
             <td class="text-center">{{$provider['updated_at']}}</td>
+            <td class="text-center"><a href="{{route('createProxies', ['id' => $provider['id']])}}">Get Proxies List</a></td>
         </tr>
       @endforeach
     </tbody>
