@@ -164,3 +164,8 @@ ALTER TABLE `proxies`
 ALTER TABLE `proxies`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
+
+ALTER TABLE `proxies` ADD `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `last_fun_date`, ADD `updated_at` TIMESTAMP NULL DEFAULT NULL AFTER `created_at`;
+
+
+ALTER TABLE `proxies` ADD `type` VARCHAR(256) NULL AFTER `port`;
