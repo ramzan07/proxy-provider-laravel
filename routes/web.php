@@ -18,3 +18,5 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', 'ProxyController@index');
+Route::get('/providers', 'ProviderController@index')->name("providers");
+Route::get('createProxies/{id?}', 'ProxyController@create')->name('createProxies');

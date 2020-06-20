@@ -7,7 +7,7 @@
          <div id="menu" class="collapse">
             <ul class="menu-link">
                <li><a href="#">RSS Posts</a></li>
-               <li><a href="#">RSS Providers</a></li>
+               <li><a href="{{route('providers')}}">Proxy Providers</a></li>
             </ul>
          </div>
       </div>
