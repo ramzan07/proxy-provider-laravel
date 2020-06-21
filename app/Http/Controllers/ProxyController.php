@@ -31,19 +31,34 @@ class ProxyController extends Controller
      */
     public function create($provider_id)
     {
+        $settings = \DB::table('settings')->where('provider_id', $provider_id)->first();
+        $flag = $this->calculateTimeDiffToUpdate($settings->request_time);
+        if (!$flag) {
+            return "time_issue";
+        }
+        if(empty($settings)){
+            $setting['provider_id'] = $provider->id;
+            $setting['request_time'] = date('Y-m-d H:i:s');
+            \App\Models\Setting::create($setting);
+        } else{
+            \DB::table('settings')->where('id', $provider_id)->update(['request_time' => date('Y-m-d H:i:s')]);
+        }
+
         /*lates request time*/
-        \DB::table('providers')->where('id', $provider_id)->update(['last_attempt_date' => date('Y-m-d H:i:s')]);
+        //\DB::table('providers')->where('id', $provider_id)->update(['last_attempt_date' => date('Y-m-d H:i:s')]);
 
         $provider = \DB::table('providers')->where('id', $provider_id)->first();
-        $xmlStr = file_get_contents($provider->url."/proxyrss.xml");
-        $from = ["prx:proxy", "prx:ip", "prx:port", "prx:type", "prx:ssl", "prx:check_timestamp", "prx:country_code", "prx:latency", "prx:reliability"];
-        $to   = ["proxy", "ip", "port","type","ssl","check_timestamp","country_code","latency","reliability"];
-        $newPhrase = str_replace($from, $to, $xmlStr);
-        $xml = simplexml_load_string($newPhrase, "SimpleXMLElement", LIBXML_NOCDATA);
-        $json = json_encode($xml);
-        $array = json_decode($json, TRUE);
+        if($provider->title == "XROXY Proxy Lists"){
+            $xmlStr = file_get_contents($provider->url."/proxyrss.xml");
+            $from = ["prx:proxy", "prx:ip", "prx:port", "prx:type", "prx:ssl", "prx:check_timestamp", "prx:country_code", "prx:latency", "prx:reliability"];
+            $to   = ["proxy", "ip", "port","type","ssl","check_timestamp","country_code","latency","reliability"];
+            $newPhrase = str_replace($from, $to, $xmlStr);
+            $xml = simplexml_load_string($newPhrase, "SimpleXMLElement", LIBXML_NOCDATA);
+            $json = json_encode($xml);
+            $array = json_decode($json, TRUE);
 
-        $this->handleProxies($array, $provider);
+            $this->handleProxies($array, $provider);
+        }
         return Redirect::back()->with('msg', 'The Message');
     }
 
@@ -105,19 +120,7 @@ class ProxyController extends Controller
 
     public function handleProxies($data, $provider) {
 
-        $settings = \DB::table('settings')->where('provider_id', $provider->id)->first();
-        $flag = $this->calculateTimeDiffToUpdate($settings->request_time);
-        if (!$flag) {
-            return "time_issue";
-        }
-        if(empty($settings)){
-            $setting['provider_id'] = $provider->id;
-            $setting['request_time'] = date('Y-m-d H:i:s');
-            \App\Models\Setting::create($setting);
-        } else{
-            \DB::table('settings')->where('id', $provider->id)->update(['request_time' => date('Y-m-d H:i:s')]);
-        }
-
+        /** Xroxy Handler*/
         $proxy = \App\Models\Proxy::where('provider_id', $provider->id)->first();
         if(empty($proxy)){
             foreach ($data['channel']['item'] as $item) {
