@@ -32,15 +32,21 @@ class ProxyController extends Controller
     public function create($provider_id)
     {
         $settings = \DB::table('settings')->where('provider_id', $provider_id)->first();
-        $flag = $this->calculateTimeDiffToUpdate($settings->request_time);
+
+        /*$flag = $this->calculateTimeDiffToUpdate($settings->request_time);
         if (!$flag) {
             return "time_issue";
-        }
+        }*/
         if(empty($settings)){
-            $setting['provider_id'] = $provider->id;
+            $setting['provider_id'] = $provider_id;
             $setting['request_time'] = date('Y-m-d H:i:s');
             \App\Models\Setting::create($setting);
         } else{
+            $flag = $this->calculateTimeDiffToUpdate($settings->request_time);
+            if (!$flag) {
+                return "time_issue";
+            }
+
             \DB::table('settings')->where('id', $provider_id)->update(['request_time' => date('Y-m-d H:i:s')]);
         }
 
@@ -51,13 +57,25 @@ class ProxyController extends Controller
         if($provider->title == "XROXY Proxy Lists"){
             $xmlStr = file_get_contents($provider->url."/proxyrss.xml");
             $from = ["prx:proxy", "prx:ip", "prx:port", "prx:type", "prx:ssl", "prx:check_timestamp", "prx:country_code", "prx:latency", "prx:reliability"];
-            $to   = ["proxy", "ip", "port","type","ssl","check_timestamp","country_code","latency","reliability"];
+            $to   = ["proxy", "ip", "port","type","ssl","checked","country_code","latency","reliability"];
             $newPhrase = str_replace($from, $to, $xmlStr);
             $xml = simplexml_load_string($newPhrase, "SimpleXMLElement", LIBXML_NOCDATA);
             $json = json_encode($xml);
             $array = json_decode($json, TRUE);
 
-            $this->handleProxies($array, $provider);
+            $this->handleXRoxy($array, $provider);
+        } else if($provider->title == "Byteproxies List"){
+            $client = new \GuzzleHttp\Client();
+            $res = $client->get('https://byteproxies.com/api.php?key=free&amount=100&type=all&anonymity=all');
+            $data =  $res->getBody();
+            $array = json_decode($data, TRUE);
+            $this->handleProxiAPI($array, $provider);
+        } elseif ($provider->title == "Proxy11 List") {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->get('https://proxy11.com/api/proxy.json?key=MTM4MA.Xua0HQ.WJbhwZOdPlqp1H7oRVXpmwpwu10');
+            $data =  $res->getBody();
+            $array = json_decode($data, TRUE);
+            $this->handleProxiAPI($array['data'], $provider);
         }
         return Redirect::back()->with('msg', 'The Message');
     }
@@ -118,7 +136,7 @@ class ProxyController extends Controller
         //
     }
 
-    public function handleProxies($data, $provider) {
+    public function handleXRoxy($data, $provider) {
 
         /** Xroxy Handler*/
         $proxy = \App\Models\Proxy::where('provider_id', $provider->id)->first();
@@ -132,30 +150,34 @@ class ProxyController extends Controller
                 $this->createProxies($item, $provider);
             }
         }
+    }
 
-        /*foreach ($data['channel']['item'] as $item) {
-            $proxy = \App\Models\Proxy::where('link', $item['link'])->first();
-            if (!empty($post)) {
-                $settings = \DB::table('settings')->where('type', 'delete')->first();
-                $time = $this->calculateTimeDiffToDelete($post->created_at);
-                if ($time > $settings->time) {
-                    $post->delete();
+
+    public function handleProxiAPI($data, $provider) {
+        /** ProxyAPIs Handler*/
+        $proxy = \App\Models\Proxy::where('provider_id', $provider->id)->first();
+        if(empty($proxy)){
+            if($provider->title == 'Proxy11 List'){
+                foreach ($data as $item) {
+                $this->createAPIProxies($item, $provider);
+                }
+            } else {
+                foreach ($data as $item) {
+                    $this->createAPIProxies($item['response'], $provider);
                 }
             }
-            if (empty($post)) {
-                $this->createProxies($item, $channel);
+        } else {
+            \App\Models\Proxy::where('provider_id', $provider->id)->delete();
+            if($provider->title == 'Proxy11 List'){
+                foreach ($data as $item) {
+                $this->createAPIProxies($item, $provider);
+                }
+            } else {
+                foreach ($data as $item) {
+                    $this->createAPIProxies($item['response'], $provider);
+                }
             }
         }
-
-        $updateSetting = \DB::table('settings')->where('type', 'update')->where('provider_id' , $channel->id)->first();
-        if(empty($updateSetting)){
-            $setting['provider_id'] = $channel->id;
-            $setting['type'] = 'update';
-            $setting['time'] = date('Y-m-d H:i:s');
-            \App\Models\Configration::create($setting);
-        } else{
-            $settings = \DB::table('settings')->where('type', 'update')->where('provider_id', $channel->id)->update(['time' => date('Y-m-d H:i:s')]);
-        }*/
     }
 
     public function createProxies($item, $provider) {
@@ -166,9 +188,25 @@ class ProxyController extends Controller
             $rss['ip'] = $item['ip'];
             $rss['port'] = $item['port'];
             $rss['type'] = $item['type'];
-            $rss['check_timestamp'] = date("Y-m-d H:i:s", substr($item['check_timestamp'], 0, 10));
+            $rss['check_timestamp'] = is_numeric($item['checked']) ? date("Y-m-d H:i:s", substr($item['checked'], 0, 10)) : $item['checked'];
             \App\Models\Proxy::create($rss);
         }
+    }
+
+
+    public function createAPIProxies($item, $provider) {
+
+            if($provider->title == 'Proxy11 List'){
+                $item['checked'] = $item['updatedAt'];
+                unset($item['updatedAt']);
+            }
+
+            $rss['provider_id'] = $provider->id;
+            $rss['ip'] = $item['ip'];
+            $rss['port'] = $item['port'];
+            $rss['type'] = $item['type'];
+            $rss['check_timestamp'] =  date("Y-m-d H:i:s", substr(strtotime($item['checked']), 0, 10));
+            \App\Models\Proxy::create($rss);
     }
 
     /**
@@ -184,7 +222,7 @@ class ProxyController extends Controller
         $minutes += $since_start->h * 60;
         $minutes += $since_start->i;
 
-        if ($minutes < 10) {
+        if ($minutes < 1) {
             return false;
         }
         return true;
