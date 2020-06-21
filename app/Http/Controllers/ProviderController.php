@@ -8,7 +8,12 @@ class ProviderController extends Controller
 {
     public function index()
     {
-        $providers = \App\Models\Provider::getProviders();
+
+        $channel = file_get_contents('http://localhost/proxy-provider/api/providers');
+        $data['channels'] = json_decode($channel, TRUE);
+
+        $providers = $data['channels']['data'];
+
         return view('providers', compact('providers'));
 
     }
