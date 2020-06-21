@@ -76,6 +76,12 @@ class ProxyController extends Controller
             $data =  $res->getBody();
             $array = json_decode($data, TRUE);
             $this->handleProxiAPI($array['data'], $provider);
+        } elseif ($provider->title == "Pubproxies List") {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->get('http://pubproxy.com/api/proxy?limit=10&fbclid=IwAR1q0n5nlv3U9YQhYpwWMeS_jfCfGEPENC2UQ0yoaYHrEf90NyHSPlUjraE');
+            $data =  $res->getBody();
+            $array = json_decode($data, TRUE);
+            $this->handleProxiAPI($array['data'], $provider);
         }
         return Redirect::back()->with('msg', 'The Message');
     }
@@ -157,7 +163,7 @@ class ProxyController extends Controller
         /** ProxyAPIs Handler*/
         $proxy = \App\Models\Proxy::where('provider_id', $provider->id)->first();
         if(empty($proxy)){
-            if($provider->title == 'Proxy11 List'){
+            if($provider->title == 'Proxy11 List' || $provider->title == 'Pubproxies List'){
                 foreach ($data as $item) {
                 $this->createAPIProxies($item, $provider);
                 }
@@ -168,7 +174,7 @@ class ProxyController extends Controller
             }
         } else {
             \App\Models\Proxy::where('provider_id', $provider->id)->delete();
-            if($provider->title == 'Proxy11 List'){
+            if($provider->title == 'Proxy11 List' || $provider->title == 'Pubproxies List'){
                 foreach ($data as $item) {
                 $this->createAPIProxies($item, $provider);
                 }
@@ -199,7 +205,11 @@ class ProxyController extends Controller
             if($provider->title == 'Proxy11 List'){
                 $item['checked'] = $item['updatedAt'];
                 unset($item['updatedAt']);
+            } else if($provider->title == 'Pubproxies List') {
+                $item['checked'] = $item['last_checked'];
+                unset($item['last_checked']);
             }
+
 
             $rss['provider_id'] = $provider->id;
             $rss['ip'] = $item['ip'];

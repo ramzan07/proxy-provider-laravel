@@ -176,3 +176,5 @@ ALTER TABLE `proxies` CHANGE `date_last_pub` `check_timestamp` TIMESTAMP NULL DE
 INSERT INTO `providers` (`id`, `title`, `url`, `status`, `last_update_date`, `last_attempt_date`, `created_at`, `updated_at`) VALUES (NULL, 'Byteproxies List', 'https://byteproxies.com', '1', NULL, NULL, current_timestamp(), NULL);
 
 INSERT INTO `providers` (`id`, `title`, `url`, `status`, `last_update_date`, `last_attempt_date`, `created_at`, `updated_at`) VALUES (NULL, 'Proxy11 List', 'https://proxy11.com', '1', NULL, NULL, current_timestamp(), NULL);
+
+INSERT INTO `providers` (`id`, `title`, `url`, `status`, `last_update_date`, `last_attempt_date`, `created_at`, `updated_at`) VALUES (NULL, 'Pubproxies List', 'http://pubproxy.com/', '1', NULL, NULL, current_timestamp(), NULL);
