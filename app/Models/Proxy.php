@@ -18,7 +18,7 @@ class Proxy extends Model {
      *
      * @var array
      */
-    protected $fillable = ['provider_id', 'ip','port', 'date_last_pub', 'last_found_date', 'first_found_date', 'last_fun_date'];
+    protected $fillable = ['provider_id', 'ip','port','type', 'check_timestamp', 'last_found_date', 'last_fun_date'];
 
 
     /**
