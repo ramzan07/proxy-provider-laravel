@@ -106,6 +106,10 @@ class ProxyController extends Controller
     public function handleProxies($data, $provider) {
 
         $settings = \DB::table('settings')->where('provider_id', $provider->id)->first();
+        $flag = $this->calculateTimeDiffToUpdate($settings->request_time);
+        if (!$flag) {
+            return "time_issue";
+        }
         if(empty($settings)){
             $setting['provider_id'] = $provider->id;
             $setting['request_time'] = date('Y-m-d H:i:s');
@@ -164,4 +168,23 @@ class ProxyController extends Controller
         }
     }
 
+    /**
+     * calculateTimeDiff method 
+     * responsible for telling system to updated feed or not
+     * @param type $time
+     * @return boolean
+     */
+    public function calculateTimeDiffToUpdate($time) {
+        $start_date = new DateTime($time);
+        $since_start = $start_date->diff(new DateTime(date('Y-m-d H:i:s')));
+        $minutes = $since_start->days * 24 * 60;
+        $minutes += $since_start->h * 60;
+        $minutes += $since_start->i;
+
+        dd($minutes);
+        if ($minutes < 10) {
+            return false;
+        }
+        return true;
+    }
 }
