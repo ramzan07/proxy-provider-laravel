@@ -15,7 +15,7 @@ class ProxyApiController  extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function getFeeds() {
+    public function getProxies() {
 
         $request_params = Input::all();
 

@@ -18,5 +18,5 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
-Route::get('rssfeeds/{id?}', 'ProxyApiController@getFeeds');
+Route::get('rssfeeds/{id?}', 'ProxyApiController@getProxies');
 Route::get('providers/{id?}', 'ProxyApiController@getProviders');
