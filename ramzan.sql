@@ -174,3 +174,5 @@ ALTER TABLE `proxies` ADD `type` VARCHAR(256) NULL AFTER `port`;
 ALTER TABLE `proxies` CHANGE `date_last_pub` `check_timestamp` TIMESTAMP NULL DEFAULT NULL;
 
 INSERT INTO `providers` (`id`, `title`, `url`, `status`, `last_update_date`, `last_attempt_date`, `created_at`, `updated_at`) VALUES (NULL, 'Byteproxies List', 'https://byteproxies.com', '1', NULL, NULL, current_timestamp(), NULL);
+
+INSERT INTO `providers` (`id`, `title`, `url`, `status`, `last_update_date`, `last_attempt_date`, `created_at`, `updated_at`) VALUES (NULL, 'Proxy11 List', 'https://proxy11.com', '1', NULL, NULL, current_timestamp(), NULL);
