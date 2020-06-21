@@ -169,3 +169,6 @@ ALTER TABLE `proxies` ADD `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMEST
 
 
 ALTER TABLE `proxies` ADD `type` VARCHAR(256) NULL AFTER `port`;
+
+
+ALTER TABLE `proxies` CHANGE `date_last_pub` `check_timestamp` TIMESTAMP NULL DEFAULT NULL;
