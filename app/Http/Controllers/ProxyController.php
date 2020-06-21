@@ -9,7 +9,7 @@ use Artisan;
 use Symfony\Component\DomCrawler\Crawler;
 use DB;
 use Redirect;
-use Carbon\Carbon;
+use DateTime;
 
 class ProxyController extends Controller
 {
@@ -110,10 +110,17 @@ class ProxyController extends Controller
             $setting['provider_id'] = $provider->id;
             $setting['request_time'] = date('Y-m-d H:i:s');
             \App\Models\Setting::create($setting);
+        } else{
+            \DB::table('settings')->where('id', $provider->id)->update(['request_time' => date('Y-m-d H:i:s')]);
         }
 
         $proxy = \App\Models\Proxy::where('provider_id', $provider->id)->first();
         if(empty($proxy)){
+            foreach ($data['channel']['item'] as $item) {
+                $this->createProxies($item, $provider);
+            }
+        } else {
+            \App\Models\Proxy::where('provider_id', $provider->id)->delete();
             foreach ($data['channel']['item'] as $item) {
                 $this->createProxies($item, $provider);
             }
@@ -146,13 +153,15 @@ class ProxyController extends Controller
 
     public function createProxies($item, $provider) {
 
-        foreach ($item['proxy'] as $item) {       }
-        $rss['provider_id'] = $provider->id;
-        $rss['ip'] = $item['ip'];
-        $rss['port'] = $item['port'];
-        $rss['type'] = $item['type'];
-        \App\Models\Proxy::create($rss);
+        foreach ($item['proxy'] as $item) {
 
-        \DB::table('settings')->where('id', $provider->id)->update(['request_time' => date('Y-m-d H:i:s')]);
+            $rss['provider_id'] = $provider->id;
+            $rss['ip'] = $item['ip'];
+            $rss['port'] = $item['port'];
+            $rss['type'] = $item['type'];
+            $rss['check_timestamp'] = date("Y-m-d H:i:s", substr($item['check_timestamp'], 0, 10));
+            \App\Models\Proxy::create($rss);
+        }
     }
+
 }
