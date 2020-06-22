@@ -39,6 +39,12 @@ table.dataTable thead .sorting_desc {
 } );
 </script>
 
+<script type="text/javascript">
+  $('#example').dataTable( {
+  "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ]
+} );
+</script>
+
 
 
 @endsection
@@ -90,10 +96,10 @@ table.dataTable thead .sorting_desc {
 <table id="example" class="display" style="width:100%">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
+                <th>IP</th>
+                <th>Port</th>
+                <th>Type</th>
+                <th>Last Check</th>
                 <th>Start date</th>
                 <th>Updated_at</th>
             </tr>
@@ -110,16 +116,6 @@ table.dataTable thead .sorting_desc {
             </tr>
           @endforeach
         </tbody>
-        <tfoot>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </tfoot>
     </table>
 
 @endsection
