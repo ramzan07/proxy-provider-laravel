@@ -10,13 +10,21 @@
 <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
 <style type="text/css">
     .not-active {
-  pointer-events: none;
-  cursor: default;
-  text-decoration: none;
-  color: red;
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+    color: red;
 }
 
 .not-allowed {cursor: not-allowed;}
+</style>
+<style type="text/css">
+  table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+    background : none;
+}
+}
 </style>
 
 @endsection
