@@ -15,24 +15,22 @@ class ProxyApiController  extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function getProxies() {
+    public function getProxies(Request $request) {
 
-        $request_params = Input::all();
+        $request_params = $request->all();
 
-        $rss  = DB::table('feeds')->join('providers', 'providers.id', '=' , 'feeds.provider_id')
-            ->select('feeds.*', 'providers.status', 'providers.provider_name', 'providers.provider_link');
+        $proxies  = DB::table('proxies');
 
         if (isset($request_params['provider_id'])) {
 
-            $rss->where('provider_id', $request_params['provider_id']);
+            $proxies->where('provider_id', $request_params['provider_id']);
         } elseif(isset($request_params['post_id'])){
 
-            $rss->where('feeds.id', $request_params['post_id']);
+            $proxies->where('feeds.id', $request_params['post_id']);
         }else {
-            $rss;
+            $proxies;
         }
-
-        $posts = $rss->get();
+        $posts = $proxies->get();
 
         return $this->jsonSuccessResponse('Process is processed success', $posts);
     }

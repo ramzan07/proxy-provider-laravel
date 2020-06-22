@@ -6,7 +6,7 @@
          <a href="javascript:void(0)" class="collapsed" data-target="#menu" data-toggle="collapse"><i class="icon-menu menu"></i></a>
          <div id="menu" class="collapse">
             <ul class="menu-link">
-               <li><a href="#">RSS Posts</a></li>
+               <li><a href="{{route('proxies')}}">RSS Posts</a></li>
                <li><a href="{{route('providers')}}">Proxy Providers</a></li>
             </ul>
          </div>

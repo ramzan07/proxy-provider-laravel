@@ -20,7 +20,12 @@ class ProxyController extends Controller
      */
     public function index()
     {
-        return view('index');
+        $proxies = file_get_contents('http://localhost/proxy-provider/api/proxies');
+        $data['channels'] = json_decode($proxies, TRUE);
+
+        $proxiesData = $data['channels']['data'];
+
+        return view('index', compact('proxiesData'));
 
     }
 

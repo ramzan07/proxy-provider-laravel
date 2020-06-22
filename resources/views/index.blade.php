@@ -7,7 +7,7 @@
 
 @section('page_styles')
 <link href="{{asset('public/css/posts.css')}}" rel="stylesheet" type="text/css">
-
+<link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
 <style type="text/css">
     .not-active {
   pointer-events: none;
@@ -23,6 +23,13 @@
 
 @section('page_scripts')
 <script src="{{asset('public/js/counter.js')}}"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#example').DataTable();
+} );
+</script>
 
 
 
@@ -72,17 +79,39 @@
 @endsection
 
 @section('content')
-
-    <!-- Blog Post Start -->
-    
-    <!-- Blog Post End -->
-    @if(!empty($feed_posts))
-    <!-- @section('loadPosts')
-    <div class="col-md-12 text-center">
-        <a href="javascript:void(0)" id="load-more-post" class="load-more-button">Load</a>
-        <div id="post-end-message"></div>
-    </div>
-    @endsection
-    @endif -->
+<table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Updated_at</th>
+            </tr>
+        </thead>
+        <tbody>
+          @foreach($proxiesData as $data)
+            <tr>
+                <td>{{$data['ip']}}</td>
+                <td>{{$data['port']}}</td>
+                <td>{{$data['type']}}</td>
+                <td>{{$data['check_timestamp']}}</td>
+                <td>{{$data['created_at']}}</td>
+                <td>{{$data['updated_at']}}</td>
+            </tr>
+          @endforeach
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </tfoot>
+    </table>
 
 @endsection
