@@ -20,6 +20,50 @@ class ProxyController extends Controller
      */
     public function index()
     {
+        /*$aContext = array(
+    'http' => array(
+        'proxy'           => '1.0.0.92:80',
+        'request_fulluri' => true,
+    ),
+    );
+    $cxContext = stream_context_create($aContext);
+    $sFile = file_get_contents("http://plasmadonor.net", False, $cxContext);
+
+echo $sFile;*/
+
+$theIP="12.952.458"
+$thePort="80:80";
+$passByIPPort= "12.952.458" . ":" . "80:80";
+ 
+ 
+// You can use any web site here to show you real ip such as http://whatismyipaddress.com/
+$url = "https://www.digi77.com/software/bouncer/data/myipvv-by-web.php";
+ 
+// Get current time to check proxy speed
+$loadingtime = time();
+ 
+$theHeader = curl_init($url);
+curl_setopt($theHeader, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($theHeader, CURLOPT_TIMEOUT, 20);
+curl_setopt($theHeader, CURLOPT_PROXY, $passByIPPort); 
+ 
+//Execute the request
+$curlResponse = curl_exec($theHeader);
+ 
+ 
+ 
+if ($curlResponse === false) 
+{
+    echo "Proxy is not working: ", curl_error($theHeader);
+} 
+else 
+{
+    //print the output
+    echo $curlResponse;
+    // Get Proxy speed speed
+    echo "Proxy speed: " . (time() - $loadingtime) . "s<br />\n";
+}// end if
+die;
         $proxies = file_get_contents('http://localhost/proxy-provider/api/proxies');
         $data['channels'] = json_decode($proxies, TRUE);
 
