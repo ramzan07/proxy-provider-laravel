@@ -89,7 +89,31 @@ table.dataTable thead .sorting_desc {
         <strong>Danger!</strong> {{Session::get('error_message')}}
     </div>
 @endif
+<form action="{{route('proxies')}}" method="POST">
 
+        <div class="col-sm-6">
+            <select name="channel_id" id="channel" class="form-control" id="exampleFormControlSelect1">
+                <option value="">Select a Provider</option>
+                @foreach($proxy_channels as $channel)
+                @php
+                    $provider = isset($_GET['channel_id']) ? $_GET['channel_id'] : '';
+                    $val = isset($channel->id) && $channel->id == $provider ? 'selected' : '';
+                @endphp
+                <option value="{{$channel->id}}" selected="{{$val}}">{{$channel->title}}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <input class="btn btn-primary form-group form-control" id="searchChannel"  type="submit" value="Search">
+        </div>
+</form>
+<form action="{{route('createProxies')}}" method="GET">
+  <div class="col-sm-9"></div>
+  <div class="col-sm-3">
+    <input type="hidden"  value="all" name="updateAll">
+    <input style = "position:relative; top:-75px;" class="btn btn-primary form-group form-control"  type="submit" value="Refresh Feed &nbsp; &#8634;">
+</div>
+</form>
 @endsection
 
 @section('content')

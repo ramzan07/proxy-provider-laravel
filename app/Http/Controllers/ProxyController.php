@@ -10,6 +10,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use DB;
 use Redirect;
 use DateTime;
+use Input;
 
 class ProxyController extends Controller
 {
@@ -18,14 +19,21 @@ class ProxyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $proxies = file_get_contents('http://localhost/proxy-provider/api/proxies');
+        $request_params = $request->all();
+        if (!empty($request_params) && isset($request_params['channel_id'])) {
+            $proxies = file_get_contents('http://localhost/proxy-provider/api/proxies?provider_id=' . $request_params['channel_id']);
+        } else {
+            $proxies = file_get_contents('http://localhost/proxy-provider/api/proxies');
+        }
+
         $data['channels'] = json_decode($proxies, TRUE);
 
         $proxiesData = $data['channels']['data'];
+        $proxy_channels = DB::table('providers')->get();
 
-        return view('index', compact('proxiesData'));
+        return view('index', compact('proxiesData', 'proxy_channels'));
 
     }
 
@@ -34,8 +42,10 @@ class ProxyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($provider_id)
+    public function create($provider_id = null, Request $request)
     {
+        $request_params = $request->all();
+        dd($request_params);
         $settings = \DB::table('settings')->where('provider_id', $provider_id)->first();
 
         /*$flag = $this->calculateTimeDiffToUpdate($settings->request_time);
