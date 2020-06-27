@@ -256,7 +256,7 @@ class ProxyController extends Controller
         $minutes += $since_start->h * 60;
         $minutes += $since_start->i;
 
-        if ($minutes < 1) {
+        if ($minutes < 10) {
             return false;
         }
         return true;
