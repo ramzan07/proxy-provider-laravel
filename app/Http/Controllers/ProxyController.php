@@ -107,7 +107,7 @@ class ProxyController extends Controller
                 $this->handleProxiAPI($array['data'], $provider);
             }
         }
-        return Redirect::back()->with('msg', 'The Message');
+        return Redirect::back()->with('success_message', 'The Message');
     }
 
     /**
@@ -213,13 +213,17 @@ class ProxyController extends Controller
     public function createProxies($item, $provider) {
 
         foreach ($item['proxy'] as $item) {
+            if(!is_array($item) || empty($item)){
+                continue;
+            } else{
+                $rss['provider_id'] = $provider->id;
+                $rss['ip'] = $item['ip'];
+                $rss['port'] = $item['port'];
+                $rss['type'] = $item['type'];
+                $rss['check_timestamp'] = is_numeric($item['checked']) ? date("Y-m-d H:i:s", substr($item['checked'], 0, 10)) : $item['checked'];
 
-            $rss['provider_id'] = $provider->id;
-            $rss['ip'] = $item['ip'];
-            $rss['port'] = $item['port'];
-            $rss['type'] = $item['type'];
-            $rss['check_timestamp'] = is_numeric($item['checked']) ? date("Y-m-d H:i:s", substr($item['checked'], 0, 10)) : $item['checked'];
-            \App\Models\Proxy::create($rss);
+                \App\Models\Proxy::create($rss);
+            }
         }
     }
 
