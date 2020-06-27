@@ -28,7 +28,7 @@ class TestUrlController extends Controller
         $str = '';
 
         $str .="<label for=\"recipient-name\" class=\"col-form-label\">IP $ Port</label>
-            <input type=\"text\" name=\"ip\" value=\"{$testip}\" class=\"form-control\" id=\"recipient-name\">";
+            <input type=\"text\" name=\"ip\" value=\"{$testip}\" class=\"form-control\" id=\"recipient-name\" readonly>";
         $str .="<label for=\"recipient-name\" class=\"col-form-label\">Select Url</label>
             <select name=\"url_id\" id=\"channel\" class=\"form-control\" id=\"exampleFormControlSelect1\">
                 <option value=\"null\">Select a Test Url</option>";
