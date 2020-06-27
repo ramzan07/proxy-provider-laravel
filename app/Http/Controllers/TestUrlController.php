@@ -27,18 +27,6 @@ class TestUrlController extends Controller
         $testip = $ip." : ".$port;
         $str = '';
 
-        /*$str .="<div class=\"col-sm-12 custom-pad-2\">
-                    <div class=\"table-responsive\">";
-                        $str .="<table class=\"table table-bordered\">
-                         <tbody>
-                        <tr>
-                          <td><b>IP&Port</b></td>
-                          <td>{$testip}</td>
-                       </tr>
-                      </tbody>
-                      </table>
-                    </div>
-                </div>";*/
         $str .="<label for=\"recipient-name\" class=\"col-form-label\">IP $ Port</label>
             <input type=\"text\" name=\"ip\" value=\"{$testip}\" class=\"form-control\" id=\"recipient-name\">";
         $str .="<label for=\"recipient-name\" class=\"col-form-label\">Select Url</label>
