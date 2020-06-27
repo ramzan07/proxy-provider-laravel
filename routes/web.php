@@ -21,3 +21,6 @@ Route::get('/', 'ProxyController@index')->name("proxies");
 Route::get('/providers', 'ProviderController@index')->name("providers");
 Route::get('createProxies/{id?}', 'ProxyController@create')->name('createProxies');
 Route::get('/testUrl', 'TestUrlController@index')->name("testurls");
+Route::get('/getUrl', 'TestUrlController@viewTestUrl')->name("getUrl");
+
+Route::post('/testip', 'TestUrlController@testIP')->name("testIP");

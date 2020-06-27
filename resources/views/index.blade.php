@@ -31,7 +31,6 @@ table.dataTable thead .sorting_desc {
 
 @section('page_scripts')
 <script src="{{asset('public/js/counter.js')}}"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
@@ -43,6 +42,27 @@ table.dataTable thead .sorting_desc {
   $('#example').dataTable( {
   "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ]
 } );
+</script>
+
+<script type="text/javascript">
+    function testUrl(id, ip, port)
+    {
+        $.ajax({
+            url: '{{route('getUrl')}}',
+            type: "GET",
+            data: {
+                'provider_id': id,
+                'ip': ip,
+                'port': port
+            },
+            success: function(result) {
+                //alert(result);
+                $('#tbody-data').html(result);
+                $('#modal-db-details').modal('toggle');
+                $("#modal-db-details").modal('show');
+            }
+        });
+    }
 </script>
 
 
@@ -126,6 +146,7 @@ table.dataTable thead .sorting_desc {
                 <th>Last Check</th>
                 <th>Start date</th>
                 <th>Updated_at</th>
+                <th>Test Url</th>
             </tr>
         </thead>
         <tbody>
@@ -137,9 +158,34 @@ table.dataTable thead .sorting_desc {
                 <td>{{$data['check_timestamp']}}</td>
                 <td>{{$data['created_at']}}</td>
                 <td>{{$data['updated_at']}}</td>
+                <td class="text-center" style="width: 200px;"><a onclick="testUrl({{$data['id']}}, '{{$data['ip']}}', '{{$data['port']}}')" class='btn btn-info btn-xs' href="#"><span class="icon-eye"></span> View</a>
             </tr>
           @endforeach
         </tbody>
     </table>
+<div class="modal fade" id="modal-db-details" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" enctype="multipart/form-data" action="{{ route('testIP') }}">
+          {{ csrf_field() }}
+          <div id ="tbody-data"></div>
+          <br>
+          <input class="btn btn-primary"  type="submit" value="Refresh Feed &nbsp; &#8634;">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 @endsection
