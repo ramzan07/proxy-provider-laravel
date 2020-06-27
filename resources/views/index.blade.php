@@ -89,7 +89,7 @@ table.dataTable thead .sorting_desc {
         <strong>Danger!</strong> {{Session::get('error_message')}}
     </div>
 @endif
-<form action="{{route('proxies')}}" method="POST">
+<form action="{{route('proxies')}}" method="GET">
 
         <div class="col-sm-6">
             <select name="channel_id" id="channel" class="form-control" id="exampleFormControlSelect1">
@@ -99,7 +99,7 @@ table.dataTable thead .sorting_desc {
                     $provider = isset($_GET['channel_id']) ? $_GET['channel_id'] : '';
                     $val = isset($channel->id) && $channel->id == $provider ? 'selected' : '';
                 @endphp
-                <option value="{{$channel->id}}" selected="{{$val}}">{{$channel->title}}</option>
+                <option value="{{$channel->id}}" {{$val}}>{{$channel->title}}</option>
                 @endforeach
             </select>
         </div>
