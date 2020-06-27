@@ -10,6 +10,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use DB;
 use Redirect;
 use DateTime;
+use Input;
 
 class ProxyController extends Controller
 {
@@ -18,14 +19,22 @@ class ProxyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $proxies = file_get_contents('http://localhost/proxy-provider/api/proxies');
+        $request_params = $request->all();
+        /*dd($request_params);*/
+        if (!empty($request_params) && isset($request_params['channel_id'])) {
+            $proxies = file_get_contents('http://localhost/proxy-provider/api/proxies?provider_id=' . $request_params['channel_id']);
+        } else {
+            $proxies = file_get_contents('http://localhost/proxy-provider/api/proxies');
+        }
+
         $data['channels'] = json_decode($proxies, TRUE);
 
         $proxiesData = $data['channels']['data'];
+        $proxy_channels = DB::table('providers')->get();
 
-        return view('index', compact('proxiesData'));
+        return view('index', compact('proxiesData', 'proxy_channels'));
 
     }
 
@@ -34,59 +43,69 @@ class ProxyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($provider_id)
+    public function create($provider_id = null, Request $request)
     {
-        $settings = \DB::table('settings')->where('provider_id', $provider_id)->first();
-
-        /*$flag = $this->calculateTimeDiffToUpdate($settings->request_time);
-        if (!$flag) {
-            return "time_issue";
-        }*/
-        if(empty($settings)){
-            $setting['provider_id'] = $provider_id;
-            $setting['request_time'] = date('Y-m-d H:i:s');
-            \App\Models\Setting::create($setting);
-        } else{
-            $flag = $this->calculateTimeDiffToUpdate($settings->request_time);
-            if (!$flag) {
-                return "time_issue";
-            }
-
-            \DB::table('settings')->where('id', $provider_id)->update(['request_time' => date('Y-m-d H:i:s')]);
+        $request_params = $request->all();
+        if(!empty($provider_id)){
+            $providers = [$provider_id];
+        } else {
+            $providers = ['1','2','3','4'];
         }
 
-        /*lates request time*/
-        //\DB::table('providers')->where('id', $provider_id)->update(['last_attempt_date' => date('Y-m-d H:i:s')]);
+        foreach ($providers as $proxyProvider) {
 
-        $provider = \DB::table('providers')->where('id', $provider_id)->first();
-        if($provider->title == "XROXY Proxy Lists"){
-            $xmlStr = file_get_contents($provider->url."/proxyrss.xml");
-            $from = ["prx:proxy", "prx:ip", "prx:port", "prx:type", "prx:ssl", "prx:check_timestamp", "prx:country_code", "prx:latency", "prx:reliability"];
-            $to   = ["proxy", "ip", "port","type","ssl","checked","country_code","latency","reliability"];
-            $newPhrase = str_replace($from, $to, $xmlStr);
-            $xml = simplexml_load_string($newPhrase, "SimpleXMLElement", LIBXML_NOCDATA);
-            $json = json_encode($xml);
-            $array = json_decode($json, TRUE);
+            $settings = \DB::table('settings')->where('provider_id', $proxyProvider)->first();
 
-            $this->handleXRoxy($array, $provider);
-        } else if($provider->title == "Byteproxies List"){
-            $client = new \GuzzleHttp\Client();
-            $res = $client->get('https://byteproxies.com/api.php?key=free&amount=100&type=all&anonymity=all');
-            $data =  $res->getBody();
-            $array = json_decode($data, TRUE);
-            $this->handleProxiAPI($array, $provider);
-        } elseif ($provider->title == "Proxy11 List") {
-            $client = new \GuzzleHttp\Client();
-            $res = $client->get('https://proxy11.com/api/proxy.json?key=MTM4MA.Xua0HQ.WJbhwZOdPlqp1H7oRVXpmwpwu10');
-            $data =  $res->getBody();
-            $array = json_decode($data, TRUE);
-            $this->handleProxiAPI($array['data'], $provider);
-        } elseif ($provider->title == "Pubproxies List") {
-            $client = new \GuzzleHttp\Client();
-            $res = $client->get('http://pubproxy.com/api/proxy?limit=10&fbclid=IwAR1q0n5nlv3U9YQhYpwWMeS_jfCfGEPENC2UQ0yoaYHrEf90NyHSPlUjraE');
-            $data =  $res->getBody();
-            $array = json_decode($data, TRUE);
-            $this->handleProxiAPI($array['data'], $provider);
+            /*$flag = $this->calculateTimeDiffToUpdate($settings->request_time);
+            if (!$flag) {
+                return "time_issue";
+            }*/
+            if(empty($settings)){
+                $setting['provider_id'] = $proxyProvider;
+                $setting['request_time'] = date('Y-m-d H:i:s');
+                \App\Models\Setting::create($setting);
+            } else{
+                $flag = $this->calculateTimeDiffToUpdate($settings->request_time);
+                if (!$flag) {
+                    return "time_issue";
+                }
+
+                \DB::table('settings')->where('id', $proxyProvider)->update(['request_time' => date('Y-m-d H:i:s')]);
+            }
+
+            /*lates request time*/
+            //\DB::table('providers')->where('id', $provider_id)->update(['last_attempt_date' => date('Y-m-d H:i:s')]);
+
+            $provider = \DB::table('providers')->where('id', $proxyProvider)->first();
+            if($provider->title == "XROXY Proxy Lists"){
+                $xmlStr = file_get_contents($provider->url."/proxyrss.xml");
+                $from = ["prx:proxy", "prx:ip", "prx:port", "prx:type", "prx:ssl", "prx:check_timestamp", "prx:country_code", "prx:latency", "prx:reliability"];
+                $to   = ["proxy", "ip", "port","type","ssl","checked","country_code","latency","reliability"];
+                $newPhrase = str_replace($from, $to, $xmlStr);
+                $xml = simplexml_load_string($newPhrase, "SimpleXMLElement", LIBXML_NOCDATA);
+                $json = json_encode($xml);
+                $array = json_decode($json, TRUE);
+
+                $this->handleXRoxy($array, $provider);
+            } else if($provider->title == "Byteproxies List"){
+                $client = new \GuzzleHttp\Client();
+                $res = $client->get('https://byteproxies.com/api.php?key=free&amount=100&type=all&anonymity=all');
+                $data =  $res->getBody();
+                $array = json_decode($data, TRUE);
+                $this->handleProxiAPI($array, $provider);
+            } elseif ($provider->title == "Proxy11 List") {
+                $client = new \GuzzleHttp\Client();
+                $res = $client->get('https://proxy11.com/api/proxy.json?key=MTM4MA.Xua0HQ.WJbhwZOdPlqp1H7oRVXpmwpwu10');
+                $data =  $res->getBody();
+                $array = json_decode($data, TRUE);
+                $this->handleProxiAPI($array['data'], $provider);
+            } elseif ($provider->title == "Pubproxies List") {
+                $client = new \GuzzleHttp\Client();
+                $res = $client->get('http://pubproxy.com/api/proxy?limit=10&fbclid=IwAR1q0n5nlv3U9YQhYpwWMeS_jfCfGEPENC2UQ0yoaYHrEf90NyHSPlUjraE');
+                $data =  $res->getBody();
+                $array = json_decode($data, TRUE);
+                $this->handleProxiAPI($array['data'], $provider);
+            }
         }
         return Redirect::back()->with('msg', 'The Message');
     }
