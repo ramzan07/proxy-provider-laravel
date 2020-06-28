@@ -1,0 +1,600 @@
+swagger: '2.0'
+info:
+  title: Proxies Blog
+  description: ''
+  version: 1.0.0
+host: 'localhost'
+basePath: /proxy-provider/api
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+  - name: proxies
+    description: ''
+  - name: providers
+    description: ''
+paths:
+  /proxies:
+    get:
+      tags:
+        - proxies
+      summary: List
+      parameters:
+          []
+      responses:
+        '200':
+          description: An array of Proxies
+          schema:
+            type: object
+            properties:
+              proxies:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      x-dbtype: int
+                      x-nullable: false
+                      x-primary-key: true
+                    provider_id:
+                      type: integer
+                      x-dbtype: int
+                      x-nullable: false
+                      maxLength: 11
+                    ip:
+                      type: string
+                      x-dbtype: varchar
+                      x-nullable: true
+                      maxLength: 255
+                    port:
+                      type: string
+                      x-dbtype: varchar
+                      x-nullable: true
+                      maxLength: 255
+                    created_at:
+                      type: string
+                      x-dbtype: datetime
+                      x-nullable: false
+                    updated_at:
+                      type: string
+                      x-dbtype: datetime
+                      x-nullable: false
+    post:
+      tags:
+        - proxies
+      summary: Create
+      parameters:
+        - name: url
+          in: body
+          description: proxies to create.
+          required: true
+          schema:
+            type: object
+            required:
+              - id
+              - url
+              - status
+            properties:
+              id:
+                type: integer
+                x-dbtype: int
+                x-nullable: false
+                x-primary-key: true
+              provider_id:
+                type: integer
+                x-dbtype: int
+                x-nullable: false
+                maxLength: 11
+              ip:
+                type: string
+                x-dbtype: varchar
+                x-nullable: true
+                maxLength: 255
+              port:
+                type: string
+                x-dbtype: varchar
+                x-nullable: true
+                maxLength: 255
+              created_at:
+                type: string
+                x-dbtype: datetime
+                x-nullable: false
+              updated_at:
+                type: string
+                x-dbtype: datetime
+                x-nullable: false
+      responses:
+        '200':
+          description: Identifier of created item.
+          schema:
+            type: integer
+  '/proxies/{id}':
+    get:
+      tags:
+        - proxies
+      summary: Read
+      parameters:
+        - name: id
+          in: path
+          description: Identifier for proxies.
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: The requested item.
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                x-dbtype: int
+                x-nullable: false
+                x-primary-key: true
+              provider_id:
+                type: integer
+                x-dbtype: int
+                x-nullable: false
+                maxLength: 11
+              ip:
+                type: string
+                x-dbtype: varchar
+                x-nullable: true
+                maxLength: 255
+              port:
+                type: string
+                x-dbtype: varchar
+                x-nullable: true
+                maxLength: 255
+              created_at:
+                type: string
+                x-dbtype: datetime
+                x-nullable: false
+              updated_at:
+                type: string
+                x-dbtype: datetime
+                x-nullable: false
+    put:
+      tags:
+        - proxies
+      summary: Update
+      parameters:
+        - name: id
+          in: path
+          description: Identifier for proxies.
+          required: true
+          type: integer
+        - name: provider_id
+          in: body
+          description: Properties of item to update.
+          required: true
+          schema:
+            type: object
+            required:
+              - id
+              - provider_id
+            properties:
+              id:
+                type: integer
+                x-dbtype: int
+                x-nullable: false
+                x-primary-key: true
+              provider_id:
+                type: integer
+                x-dbtype: int
+                x-nullable: false
+                maxLength: 11
+              ip:
+                type: string
+                x-dbtype: varchar
+                x-nullable: true
+                maxLength: 255
+              port:
+                type: string
+                x-dbtype: varchar
+                x-nullable: true
+                maxLength: 255
+              created_at:
+                type: string
+                x-dbtype: datetime
+                x-nullable: false
+              updated_at:
+                type: string
+                x-dbtype: datetime
+                x-nullable: false
+      responses:
+        '200':
+          description: Number of affected rows.
+          schema:
+            type: integer
+    delete:
+      tags:
+        - proxies
+      summary: Delete
+      parameters:
+        - name: id
+          in: path
+          description: Identifier for proxies.
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Number of affected rows.
+          schema:
+            type: integer
+    patch:
+      tags:
+        - proxies
+      summary: Increment
+      parameters:
+        - name: id
+          in: path
+          description: Identifier for proxies.
+          required: true
+          type: integer
+        - name: item
+          in: body
+          description: Properties of item to update.
+          required: true
+          schema:
+            type: object
+            required:
+              - id
+              - provider_id
+            properties:
+              id:
+                type: integer
+                x-dbtype: int
+                x-nullable: false
+                x-primary-key: true
+              provider_id:
+                type: integer
+                x-dbtype: int
+                x-nullable: false
+                maxLength: 11
+              ip:
+                type: string
+                x-dbtype: varchar
+                x-nullable: true
+                maxLength: 255
+              port:
+                type: string
+                x-dbtype: varchar
+                x-nullable: true
+                maxLength: 255
+              created_at:
+                type: string
+                x-dbtype: datetime
+                x-nullable: false
+              updated_at:
+                type: string
+                x-dbtype: datetime
+                x-nullable: false
+      responses:
+        '200':
+          description: Number of affected rows.
+          schema:
+            type: integer
+  /providers:
+    get:
+      tags:
+        - providers
+      summary: List
+      parameters:
+        []
+      responses:
+        '200':
+          description: An array of providers
+          schema:
+            type: object
+            properties:
+              providers:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      x-dbtype: int
+                      x-nullable: false
+                      x-primary-key: true
+                    title:
+                      type: string
+                      x-dbtype: varchar
+                      x-nullable: true
+                      maxLength: 255
+                    url:
+                      type: string
+                      x-dbtype: text
+                      x-nullable: false
+                      maxLength: 65535
+                    status:
+                      type: string
+                      x-dbtype: enum
+                      x-nullable: false
+                      maxLength: 1
+                    last_update_date:
+                      type: string
+                      x-dbtype: datetime
+                      x-nullable: false
+                      maxLength: 255
+                    last_attempt_date:
+                      type: string
+                      x-dbtype: datetime
+                      x-nullable: false
+                      maxLength: 255
+                    created_at:
+                      type: string
+                      x-dbtype: datetime
+                      x-nullable: false
+                      maxLength: 255
+                    updated_at:
+                      type: string
+                      x-dbtype: datetime
+                      x-nullable: false
+                      maxLength: 255
+    post:
+      tags:
+        - providers
+      summary: Create
+      parameters:
+        - name: url
+          in: body
+          description: provider to create.
+          required: true
+          schema:
+            type: object
+            required:
+              - id
+              - url
+            properties:
+              id:
+                  type: integer
+                  x-dbtype: int
+                  x-nullable: false
+                  x-primary-key: true
+              title:
+                  type: string
+                  x-dbtype: varchar
+                  x-nullable: true
+                  maxLength: 255
+              url:
+                  type: string
+                  x-dbtype: text
+                  x-nullable: false
+                  maxLength: 65535
+              status:
+                  type: string
+                  x-dbtype: enum
+                  x-nullable: false
+                  maxLength: 1
+              last_update_date:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              last_attempt_date:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              created_at:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              updated_at:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+      responses:
+        '200':
+          description: Identifier of created item.
+          schema:
+            type: integer
+  '/providers/{id}':
+    get:
+      tags:
+        - providers
+      summary: Read
+      parameters:
+        - name: id
+          in: path
+          description: Identifier for provider.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The requested proxies.
+          schema:
+            type: object
+            properties:
+              id:
+                  type: integer
+                  x-dbtype: int
+                  x-nullable: false
+                  x-primary-key: true
+              title:
+                  type: string
+                  x-dbtype: varchar
+                  x-nullable: true
+                  maxLength: 255
+              url:
+                  type: string
+                  x-dbtype: text
+                  x-nullable: false
+                  maxLength: 65535
+              status:
+                  type: string
+                  x-dbtype: enum
+                  x-nullable: false
+                  maxLength: 1
+              last_update_date:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              last_attempt_date:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              created_at:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              updated_at:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+    put:
+      tags:
+        - providers
+      summary: Update
+      parameters:
+        - name: id
+          in: path
+          description: Identifier for provider.
+          required: true
+          type: string
+        - name: item
+          in: body
+          description: Properties of provider to update.
+          required: true
+          schema:
+            type: object
+            required:
+              - id
+              - url
+            properties:
+              id:
+                  type: integer
+                  x-dbtype: int
+                  x-nullable: false
+                  x-primary-key: true
+              title:
+                  type: string
+                  x-dbtype: varchar
+                  x-nullable: true
+                  maxLength: 255
+              url:
+                  type: string
+                  x-dbtype: text
+                  x-nullable: false
+                  maxLength: 65535
+              status:
+                  type: string
+                  x-dbtype: enum
+                  x-nullable: false
+                  maxLength: 1
+              last_update_date:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              last_attempt_date:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              created_at:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              updated_at:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+      responses:
+        '200':
+          description: Number of affected rows.
+          schema:
+            type: integer
+    delete:
+      tags:
+        - providers
+      summary: Delete
+      parameters:
+        - name: id
+          in: path
+          description: Identifier for provider.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Number of affected rows.
+          schema:
+            type: integer
+    patch:
+      tags:
+        - providers
+      summary: Increment
+      parameters:
+        - name: id
+          in: path
+          description: Identifier for item.
+          required: true
+          type: string
+        - name: item
+          in: body
+          description: Properties of item to update.
+          required: true
+          schema:
+            type: object
+            required:
+              - id
+              - url
+            properties:
+              id:
+                  type: integer
+                  x-dbtype: int
+                  x-nullable: false
+                  x-primary-key: true
+              title:
+                  type: string
+                  x-dbtype: varchar
+                  x-nullable: true
+                  maxLength: 255
+              url:
+                  type: string
+                  x-dbtype: text
+                  x-nullable: false
+                  maxLength: 65535
+              status:
+                  type: string
+                  x-dbtype: enum
+                  x-nullable: false
+                  maxLength: 1
+              last_update_date:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              last_attempt_date:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              created_at:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+              updated_at:
+                  type: string
+                  x-dbtype: datetime
+                  x-nullable: false
+                  maxLength: 255
+      responses:
+        '200':
+          description: Number of affected rows.
+          schema:
+            type: integer
