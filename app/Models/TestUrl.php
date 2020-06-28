@@ -18,7 +18,7 @@ class TestUrl extends Model {
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['testurl', 'ip', 'port', 'status', 'success_time'];
 
     /**
      * Indicates if the model should be timestamped.

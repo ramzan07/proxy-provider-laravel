@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+Use Redirect;
 
 class TestUrlController extends Controller
 {
@@ -67,24 +68,30 @@ class TestUrlController extends Controller
 
 		if(isset($myip) && isset($myport))
 		{
-			$this->CheckSingleProxy($myip, $myport, $timeout, true, $socksOnly, $proxy_type, $url->testurl);
+			$status = $this->CheckSingleProxy($myip, $myport, $timeout, true, $socksOnly, $proxy_type, $url->testurl, $url->id);
+			if($status == true){
+				return redirect()->route('testurls')->with('success_message', 'Success');
+			} else {
+				return redirect()->route('testurls')->with('error_message', 'Failed');;
+			}
 		}
 		else
 		{
 			die("<h2>Could not find the required GET parameters.</h2><br /><b>To check a proxy use:</b><br /><i>checker.php?ip=...&port=...</i><br /><b>To go through a list of proxies (IP:PORT Format) use:</b><br /><i>checker.php?file=...</i>");
 		}
+		return Redirect::back();
     }
 
 
-    function CheckSingleProxy($ip, $port, $timeout, $echoResults=true, $socksOnly=false, $proxy_type="http(s)", $testUrl)
+    public function CheckSingleProxy($ip, $port, $timeout, $echoResults=true, $socksOnly=false, $proxy_type="http(s)", $testUrl, $primaryUrl)
 	{
 		$url = $testUrl;
+		$urlId = $primaryUrl;
 		$passByIPPort = $ip . ":" . $port;
 
 
 		// You can use virtually any website here, but in case you need to implement other proxy settings (show annonimity level)
 		// I'll leave you with whatismyipaddress.com, because it shows a lot of info.
-		$url = "http://whatismyipaddress.com/";
 		if(empty($url)){
 			echo "url not valid";
 		}
@@ -118,7 +125,7 @@ class TestUrlController extends Controller
             //Just as a safety net though, I'm still aborting if $socksOnly is true (i.e. we were initially checking for a socks-specific proxy)
             if(curl_errno($theHeader) == 56 && !$socksOnly)
             {
-                $this->CheckSingleProxy($ip, $port, $timeout, $echoResults, true, "socks", $url);
+                $this->CheckSingleProxy($ip, $port, $timeout, $echoResults, true, "socks", $url, $urlId);
                 return;
             }
             
@@ -149,21 +156,39 @@ class TestUrlController extends Controller
 			);
 		}
         if($echoResults)
-        { 
-            //var_dump($arr['result']);
-			if($arr['result']['success'])
-			{?>
-				<h1 class="display-1"><?php echo$arr['result']['proxy']['ip'].':'.$arr['result']['proxy']['port']; ?></h1>
-				<h1 class="display-2"><?php echo "is Works!"; ?></h1>
-			<?php }
-			else
-			{
-			?>
-				<h1 class="display-1"><?php echo$arr['result']['proxy']['ip'].':'.$arr['result']['proxy']['port']; ?></h1>
-				<h1 class="display-2"><?php echo "Is Dead!"; ?></h1>
-			<?php
+        {
+			if($arr['result']['success']) {
+				$ipResult = $this->createTestUrlData($ip, $port, true, $urlId);
+				return $ipResult;
+			}
+			else {
+				$ipResult = $this->createTestUrlData($ip, $port, false, $urlId);
+				return $ipResult;
 			}
 		}
 
+	 }
+
+	 public function createTestUrlData($ip, $port, $status, $urlid) {
+	 	date_default_timezone_set('Europe/Berlin');
+	 	$dateTime = date('Y-m-d H:i:s', time());
+	 	if($status == true) {
+	 		$testData = \App\Models\TestUrl::findOrFail($urlid);
+	 		$testData->fill([
+	        'success_time'         => $dateTime,
+	        'status'               => 1,
+	        'ip'                   => $ip,
+	        'port'                 => $port,
+	        ])->save();
+	 		return true;
+	 	} else {
+	 		$testData = \App\Models\TestUrl::findOrFail($urlid);
+	 		$testData->fill([
+	        'status'               => 0,
+	        'ip'                   => $ip,
+	        'port'                 => $port,
+	        ])->save();
+	 		return false;
+	 	}
 	 }
 }
