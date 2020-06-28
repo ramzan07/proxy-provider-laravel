@@ -174,7 +174,7 @@ table.dataTable thead .sorting_desc {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
+        <h5 class="modal-title">Test Proxy</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -184,12 +184,11 @@ table.dataTable thead .sorting_desc {
           {{ csrf_field() }}
           <div id ="tbody-data"></div>
           <br>
-          <input class="btn btn-primary"  type="submit" value="Refresh Feed &nbsp; &#8634;">
+          <center><input class="btn btn-primary"  type="submit" value="Test"></center>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>

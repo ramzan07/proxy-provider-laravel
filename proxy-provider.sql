@@ -239,3 +239,5 @@ INSERT INTO `testurls` (`id`, `testurl`, `ip`, `port`, `status`, `success_time`,
 INSERT INTO `testurls` (`id`, `testurl`, `ip`, `port`, `status`, `success_time`, `created_at`, `updated_at`) VALUES (NULL, 'http://plasmadonor.net/', NULL, NULL, NULL, NULL, current_timestamp(), NULL), (NULL, 'https://www.w3schools.com/', NULL, NULL, NULL, NULL, current_timestamp(), NULL);
 INSERT INTO `testurls` (`id`, `testurl`, `ip`, `port`, `status`, `success_time`, `created_at`, `updated_at`) VALUES (NULL, 'http://whatismyipaddress.com/', NULL, NULL, NULL, NULL, current_timestamp(), NULL);
 UPDATE `testurls` SET `testurl` = 'http://www.google.com/' WHERE `testurls`.`id` = 1;
+
+INSERT INTO `providers` (`id`, `title`, `url`, `status`, `last_update_date`, `last_attempt_date`, `created_at`, `updated_at`) VALUES (NULL, 'ROTATING PROXY', 'https://getproxylist.com/', '1', NULL, NULL, current_timestamp(), NULL);
