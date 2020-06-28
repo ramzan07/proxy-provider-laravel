@@ -81,14 +81,21 @@ table.dataTable thead .sorting_desc {
     <div class="white-spacing">
       <i class="icon-support fa-2x"></i>
       <h1 class="timer count-title count-number" data-to="70" data-speed="1500"></h2>
-      <h1>Posts</h1>
+      <h1>Proxies</h1>
+    </div>
+</div>
+<div class="my-detail col"  style="margin-bottom: 0px;">
+    <div class="white-spacing">
+      <i class="icon-support fa-2x"></i>
+      <h1 class="timer count-title count-number" data-to="70" data-speed="1500"></h2>
+      <h1>Test URL'S</h1>
     </div>
 </div>
 @endsection
 
 @section('page_heading')
 <div class="sub-title">
-    <h2>RSS Feeds</h2>
+    <h2>Proxy Lists</h2>
     <a href="#"><i class="icon-envelope"></i></a>
 </div>
 @endsection
@@ -131,7 +138,7 @@ table.dataTable thead .sorting_desc {
   <div class="col-sm-9"></div>
   <div class="col-sm-3">
     <input type="hidden"  value="all" name="updateAll">
-    <input style = "position:relative; top:-75px;" class="btn btn-primary form-group form-control"  type="submit" value="Refresh Feed &nbsp; &#8634;">
+    <input style = "position:relative; top:-75px;" class="btn btn-primary form-group form-control"  type="submit" value="Refresh &nbsp; &#8634;">
 </div>
 </form>
 @endsection
@@ -158,7 +165,7 @@ table.dataTable thead .sorting_desc {
                 <td>{{$data['check_timestamp']}}</td>
                 <td>{{$data['created_at']}}</td>
                 <td>{{$data['updated_at']}}</td>
-                <td class="text-center" style="width: 200px;"><a onclick="testUrl({{$data['id']}}, '{{$data['ip']}}', '{{$data['port']}}')" class='btn btn-info btn-xs' href="#"><span class="icon-eye"></span> View</a>
+                <td class="text-center" style="width: 200px;"><a onclick="testUrl({{$data['id']}}, '{{$data['ip']}}', '{{$data['port']}}')" class='btn btn-info btn-xs' href="#"><span class="icon-eye"></span> Test</a>
             </tr>
           @endforeach
         </tbody>

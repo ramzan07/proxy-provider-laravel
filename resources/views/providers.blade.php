@@ -22,7 +22,7 @@
 
 @section('page_heading')
 <div class="sub-title">
-    <h2>RSS Providers</h2>
+    <h2>Proxy Providers</h2>
     <a href="#"><i class="icon-support"></i></a>
 </div>
 @endsection
@@ -30,16 +30,23 @@
 @section('sidebarCards')
 <div class="my-detail col"  style="margin-bottom: 0px;">
     <div class="white-spacing">
-      <i class="fa fa-code fa-2x"></i>
-      <h1 class="timer count-title count-number" data-to="5" data-speed="1500"></h2>
-      <h1>News Count</h1>
+      <i class="icon-envelope fa-2x"></i>
+      <h1 class="timer count-title count-number" data-to="{{$providersCount}}" data-speed="1500"></h2>
+      <h1>Providers</h1>
     </div>
       </div>
 <div class="my-detail col"  style="margin-bottom: 0px;">
     <div class="white-spacing">
-      <i class="fa fa-code fa-2x"></i>
-      <h1 class="timer count-title count-number" data-to="205" data-speed="1500"></h2>
-      <h1>News Count</h1>
+      <i class="icon-support fa-2x"></i>
+      <h1 class="timer count-title count-number" data-to="{{$proxiesCount}}" data-speed="1500"></h2>
+      <h1>Proxies</h1>
+    </div>
+</div>
+<div class="my-detail col"  style="margin-bottom: 0px;">
+    <div class="white-spacing">
+      <i class="icon-support fa-2x"></i>
+      <h1 class="timer count-title count-number" data-to="{{$testUrlCount}}" data-speed="1500"></h2>
+      <h1>Test URL'S</h1>
     </div>
 </div>
 @endsection
