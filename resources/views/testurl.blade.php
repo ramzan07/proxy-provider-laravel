@@ -22,7 +22,7 @@
 
 @section('page_heading')
 <div class="sub-title">
-    <h2>Test Url</h2>
+    <h2>Test URL'S</h2>
     <a href="#"><i class="icon-support"></i></a>
 </div>
 @endsection

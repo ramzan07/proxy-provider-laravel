@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 
 Route::get('/', 'ProxyController@index')->name("proxies");
 Route::get('/providers', 'ProviderController@index')->name("providers");
