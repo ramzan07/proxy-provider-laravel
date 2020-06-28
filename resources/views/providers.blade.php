@@ -56,9 +56,24 @@
 @endsection
 
 @section('action_buttons')
-<div id="msg" class="display-hide">
+<!-- <div id="msg" class="display-hide">
     <center><span id='msg-text'><span></center>
-</div>
+</div> -->
+@if(Session::has('success_message'))
+    <div class="alert alert-success" id="message">
+        <center><strong>Success!</strong> {{Session::get('success_message')}} </center>
+    </div>
+    @endif
+    @if(Session::has('warning_message'))
+    <div class="alert alert-warning" id="message">
+        <center><strong>Warning!</strong> {{Session::get('warning_message')}}</center>
+    </div>   
+    @endif
+    @if(Session::has('error_message'))
+    <div class="alert alert-danger" id="message">
+        <center><strong>Danger!</strong> {{Session::get('error_message')}}</center>
+    </div>
+@endif
 @endsection
 
 @section('content')
@@ -79,7 +94,7 @@
             <td class="text-center">{{$provider['title']}}</td>
             <td class="text-center">{{$provider['url']}}</td>
             <td class="text-center">{{$provider['last_update_date']}}</td>
-            <td class="text-center">{{$provider['updated_at']}}</td>
+            <td class="text-center">{{$provider['last_attempt_date']}}</td>
             <td class="text-center"><a href="{{route('createProxies', ['id' => $provider['id']])}}">Get Proxies List</a></td>
         </tr>
       @endforeach

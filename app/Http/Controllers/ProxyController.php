@@ -74,54 +74,55 @@ class ProxyController extends Controller
             if (!$flag) {
                 return "time_issue";
             }*/
+            date_default_timezone_set('Europe/Berlin');
+            $dateTime = date('Y-m-d H:i:s');
             if(empty($settings)){
                 $setting['provider_id'] = $proxyProvider;
-                $setting['request_time'] = date('Y-m-d H:i:s');
+                $setting['request_time'] = $dateTime;
                 \App\Models\Setting::create($setting);
             } else{
                 $flag = $this->calculateTimeDiffToUpdate($settings->request_time);
                 if (!$flag) {
-                    return "time_issue";
+                    \DB::table('providers')->where('id', $proxyProvider)->update(['last_attempt_date' => $dateTime]);
+                    return Redirect::back()->with('warning_message', 'Request Time is too short');
+                } else {
+                    \DB::table('settings')->where('provider_id', $proxyProvider)->update(['request_time' => $dateTime]);
+                    \DB::table('providers')->where('id', $provider_id)->update(['last_update_date' => $dateTime, 'last_attempt_date' => $dateTime]);
+
+                    $provider = \DB::table('providers')->where('id', $proxyProvider)->first();
+                    if($provider->title == "XROXY Proxy Lists"){
+                        $xmlStr = file_get_contents($provider->url."/proxyrss.xml");
+                        $from = ["prx:proxy", "prx:ip", "prx:port", "prx:type", "prx:ssl", "prx:check_timestamp", "prx:country_code", "prx:latency", "prx:reliability"];
+                        $to   = ["proxy", "ip", "port","type","ssl","checked","country_code","latency","reliability"];
+                        $newPhrase = str_replace($from, $to, $xmlStr);
+                        $xml = simplexml_load_string($newPhrase, "SimpleXMLElement", LIBXML_NOCDATA);
+                        $json = json_encode($xml);
+                        $array = json_decode($json, TRUE);
+
+                        $this->handleXRoxy($array, $provider);
+                    } else if($provider->title == "Byteproxies List"){
+                        $client = new \GuzzleHttp\Client();
+                        $res = $client->get('https://byteproxies.com/api.php?key=free&amount=100&type=all&anonymity=all');
+                        $data =  $res->getBody();
+                        $array = json_decode($data, TRUE);
+                        $this->handleProxiAPI($array, $provider);
+                    } elseif ($provider->title == "Proxy11 List") {
+                        $client = new \GuzzleHttp\Client();
+                        $res = $client->get('https://proxy11.com/api/proxy.json?key=MTM4MA.Xua0HQ.WJbhwZOdPlqp1H7oRVXpmwpwu10');
+                        $data =  $res->getBody();
+                        $array = json_decode($data, TRUE);
+                        $this->handleProxiAPI($array['data'], $provider);
+                    } elseif ($provider->title == "Pubproxies List") {
+                        $client = new \GuzzleHttp\Client();
+                        $res = $client->get('http://pubproxy.com/api/proxy?limit=10&fbclid=IwAR1q0n5nlv3U9YQhYpwWMeS_jfCfGEPENC2UQ0yoaYHrEf90NyHSPlUjraE');
+                        $data =  $res->getBody();
+                        $array = json_decode($data, TRUE);
+                        $this->handleProxiAPI($array['data'], $provider);
+                    }
                 }
-
-                \DB::table('settings')->where('id', $proxyProvider)->update(['request_time' => date('Y-m-d H:i:s')]);
-            }
-
-            /*lates request time*/
-            //\DB::table('providers')->where('id', $provider_id)->update(['last_attempt_date' => date('Y-m-d H:i:s')]);
-
-            $provider = \DB::table('providers')->where('id', $proxyProvider)->first();
-            if($provider->title == "XROXY Proxy Lists"){
-                $xmlStr = file_get_contents($provider->url."/proxyrss.xml");
-                $from = ["prx:proxy", "prx:ip", "prx:port", "prx:type", "prx:ssl", "prx:check_timestamp", "prx:country_code", "prx:latency", "prx:reliability"];
-                $to   = ["proxy", "ip", "port","type","ssl","checked","country_code","latency","reliability"];
-                $newPhrase = str_replace($from, $to, $xmlStr);
-                $xml = simplexml_load_string($newPhrase, "SimpleXMLElement", LIBXML_NOCDATA);
-                $json = json_encode($xml);
-                $array = json_decode($json, TRUE);
-
-                $this->handleXRoxy($array, $provider);
-            } else if($provider->title == "Byteproxies List"){
-                $client = new \GuzzleHttp\Client();
-                $res = $client->get('https://byteproxies.com/api.php?key=free&amount=100&type=all&anonymity=all');
-                $data =  $res->getBody();
-                $array = json_decode($data, TRUE);
-                $this->handleProxiAPI($array, $provider);
-            } elseif ($provider->title == "Proxy11 List") {
-                $client = new \GuzzleHttp\Client();
-                $res = $client->get('https://proxy11.com/api/proxy.json?key=MTM4MA.Xua0HQ.WJbhwZOdPlqp1H7oRVXpmwpwu10');
-                $data =  $res->getBody();
-                $array = json_decode($data, TRUE);
-                $this->handleProxiAPI($array['data'], $provider);
-            } elseif ($provider->title == "Pubproxies List") {
-                $client = new \GuzzleHttp\Client();
-                $res = $client->get('http://pubproxy.com/api/proxy?limit=10&fbclid=IwAR1q0n5nlv3U9YQhYpwWMeS_jfCfGEPENC2UQ0yoaYHrEf90NyHSPlUjraE');
-                $data =  $res->getBody();
-                $array = json_decode($data, TRUE);
-                $this->handleProxiAPI($array['data'], $provider);
             }
         }
-        return Redirect::back()->with('success_message', 'The Message');
+        return Redirect::back()->with('success_message', 'Proxies Updated Successfully');
     }
 
     public function handleXRoxy($data, $provider) {
