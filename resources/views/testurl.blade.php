@@ -31,21 +31,21 @@
 <div class="my-detail col"  style="margin-bottom: 0px;">
     <div class="white-spacing">
       <i class="icon-envelope fa-2x"></i>
-      <h1 class="timer count-title count-number" data-to="50" data-speed="1500"></h2>
+      <h1 class="timer count-title count-number" data-to="{{$providersCount}}" data-speed="1500"></h2>
       <h1>Providers</h1>
     </div>
       </div>
 <div class="my-detail col"  style="margin-bottom: 0px;">
     <div class="white-spacing">
       <i class="icon-support fa-2x"></i>
-      <h1 class="timer count-title count-number" data-to="70" data-speed="1500"></h2>
+      <h1 class="timer count-title count-number" data-to="{{$proxiesCount}}" data-speed="1500"></h2>
       <h1>Proxies</h1>
     </div>
 </div>
 <div class="my-detail col"  style="margin-bottom: 0px;">
     <div class="white-spacing">
       <i class="icon-support fa-2x"></i>
-      <h1 class="timer count-title count-number" data-to="70" data-speed="1500"></h2>
+      <h1 class="timer count-title count-number" data-to="{{$testUrlCount}}" data-speed="1500"></h2>
       <h1>Test URL'S</h1>
     </div>
 </div>

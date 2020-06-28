@@ -11,7 +11,6 @@ class ProviderController extends Controller
 
         $channel = file_get_contents('http://localhost/proxy-provider/api/providers');
         $data['channels'] = json_decode($channel, TRUE);
-
         $providers = $data['channels']['data'];
         $providersCount = count($providers);
 

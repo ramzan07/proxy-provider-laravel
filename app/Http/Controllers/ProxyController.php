@@ -34,7 +34,21 @@ class ProxyController extends Controller
         $proxiesData = $data['channels']['data'];
         $proxy_channels = DB::table('providers')->get();
 
-        return view('index', compact('proxiesData', 'proxy_channels'));
+
+
+        $channel = file_get_contents('http://localhost/proxy-provider/api/providers');
+        $data['channels'] = json_decode($channel, TRUE);
+        $providers = $data['channels']['data'];
+        $providersCount = count($providers);
+
+        $proxiesCount= count($proxiesData);
+
+        $testUrl = file_get_contents('http://localhost/proxy-provider/api/testUrl');
+        $data['channels'] = json_decode($testUrl, TRUE);
+        $testUrlData = $data['channels']['data'];
+        $testUrlCount= count($testUrlData);
+
+        return view('index', compact('proxiesData', 'proxy_channels', 'providersCount', 'proxiesCount', 'testUrlCount'));
 
     }
 

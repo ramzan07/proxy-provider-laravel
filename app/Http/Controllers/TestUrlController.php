@@ -14,7 +14,19 @@ class TestUrlController extends Controller
 
         $testurls = $data['channels']['data'];
 
-        return view('testurl', compact('testurls'));
+        $channel = file_get_contents('http://localhost/proxy-provider/api/providers');
+        $data['channels'] = json_decode($channel, TRUE);
+        $providers = $data['channels']['data'];
+        $providersCount = count($providers);
+
+        $proxies = file_get_contents('http://localhost/proxy-provider/api/proxies');
+        $data['channels'] = json_decode($proxies, TRUE);
+        $proxiesData = $data['channels']['data'];
+        $proxiesCount= count($proxiesData);
+
+        $testUrlCount= count($testurls);
+
+        return view('testurl', compact('testurls', 'providersCount', 'proxiesCount', 'testUrlCount'));
     }
 
     public function viewTestUrl(Request $request) {
