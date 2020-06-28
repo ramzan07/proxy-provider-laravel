@@ -44,6 +44,7 @@ table.dataTable thead .sorting_desc {
 } );
 </script>
 
+
 <script type="text/javascript">
     function testUrl(id, ip, port)
     {
@@ -149,7 +150,6 @@ table.dataTable thead .sorting_desc {
             <tr>
                 <th>IP</th>
                 <th>Port</th>
-                <th>Type</th>
                 <th>Last Check</th>
                 <th>Start date</th>
                 <th>Updated_at</th>
@@ -161,7 +161,6 @@ table.dataTable thead .sorting_desc {
             <tr>
                 <td>{{$data['ip']}}</td>
                 <td>{{$data['port']}}</td>
-                <td>{{$data['type']}}</td>
                 <td>{{$data['check_timestamp']}}</td>
                 <td>{{$data['created_at']}}</td>
                 <td>{{$data['updated_at']}}</td>
