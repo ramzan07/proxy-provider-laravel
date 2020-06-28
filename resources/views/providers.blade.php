@@ -1,5 +1,9 @@
 @extends('layout.master')
+@section('title')
 
+ <title>Providers</title>
+
+@endsection
 @section('page_styles')
 <link href="{{asset('public/css/posts.css')}}" rel="stylesheet" type="text/css">
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">

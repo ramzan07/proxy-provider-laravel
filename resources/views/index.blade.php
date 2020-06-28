@@ -1,7 +1,7 @@
 @extends('layout.master')
 @section('title')
 
- <title>RSS Posts</title>
+ <title>Proxy Lists</title>
 
 @endsection
 

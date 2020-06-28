@@ -1,4 +1,9 @@
 @extends('layout.master')
+@section('title')
+
+ <title>Test URL'S</title>
+
+@endsection
 
 @section('page_styles')
 <link href="{{asset('public/css/posts.css')}}" rel="stylesheet" type="text/css">
