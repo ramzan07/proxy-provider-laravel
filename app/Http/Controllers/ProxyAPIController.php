@@ -52,4 +52,9 @@ class ProxyApiController  extends Controller {
         return $this->jsonSuccessResponse('Process is processed success', $providers);
     }
 
+    public function getTestUrl(Request $request) {
+        $testUrl = \App\Models\TestUrl::all();
+        return $this->jsonSuccessResponse('Process is processed success', $testUrl);
+    }
+
 }

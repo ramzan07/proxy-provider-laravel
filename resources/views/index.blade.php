@@ -1,7 +1,7 @@
 @extends('layout.master')
 @section('title')
 
- <title>RSS Posts</title>
+ <title>Proxy Lists</title>
 
 @endsection
 
@@ -31,7 +31,6 @@ table.dataTable thead .sorting_desc {
 
 @section('page_scripts')
 <script src="{{asset('public/js/counter.js')}}"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
@@ -46,6 +45,28 @@ table.dataTable thead .sorting_desc {
 </script>
 
 
+<script type="text/javascript">
+    function testUrl(id, ip, port)
+    {
+        $.ajax({
+            url: '{{route('getUrl')}}',
+            type: "GET",
+            data: {
+                'provider_id': id,
+                'ip': ip,
+                'port': port
+            },
+            success: function(result) {
+                //alert(result);
+                $('#tbody-data').html(result);
+                $('#modal-db-details').modal('toggle');
+                $("#modal-db-details").modal('show');
+            }
+        });
+    }
+</script>
+
+
 
 @endsection
 
@@ -53,22 +74,29 @@ table.dataTable thead .sorting_desc {
 <div class="my-detail col"  style="margin-bottom: 0px;">
     <div class="white-spacing">
       <i class="icon-envelope fa-2x"></i>
-      <h1 class="timer count-title count-number" data-to="50" data-speed="1500"></h2>
+      <h1 class="timer count-title count-number" data-to="{{$providersCount}}" data-speed="1500"></h2>
       <h1>Providers</h1>
     </div>
       </div>
 <div class="my-detail col"  style="margin-bottom: 0px;">
     <div class="white-spacing">
       <i class="icon-support fa-2x"></i>
-      <h1 class="timer count-title count-number" data-to="70" data-speed="1500"></h2>
-      <h1>Posts</h1>
+      <h1 class="timer count-title count-number" data-to="{{$proxiesCount}}" data-speed="1500"></h2>
+      <h1>Proxies</h1>
+    </div>
+</div>
+<div class="my-detail col"  style="margin-bottom: 0px;">
+    <div class="white-spacing">
+      <i class="icon-support fa-2x"></i>
+      <h1 class="timer count-title count-number" data-to="{{$testUrlCount}}" data-speed="1500"></h2>
+      <h1>Test URL'S</h1>
     </div>
 </div>
 @endsection
 
 @section('page_heading')
 <div class="sub-title">
-    <h2>RSS Feeds</h2>
+    <h2>Proxy Lists</h2>
     <a href="#"><i class="icon-envelope"></i></a>
 </div>
 @endsection
@@ -111,7 +139,7 @@ table.dataTable thead .sorting_desc {
   <div class="col-sm-9"></div>
   <div class="col-sm-3">
     <input type="hidden"  value="all" name="updateAll">
-    <input style = "position:relative; top:-75px;" class="btn btn-primary form-group form-control"  type="submit" value="Refresh Feed &nbsp; &#8634;">
+    <input style = "position:relative; top:-75px;" class="btn btn-primary form-group form-control"  type="submit" value="Refresh &nbsp; &#8634;">
 </div>
 </form>
 @endsection
@@ -122,10 +150,10 @@ table.dataTable thead .sorting_desc {
             <tr>
                 <th>IP</th>
                 <th>Port</th>
-                <th>Type</th>
                 <th>Last Check</th>
                 <th>Start date</th>
                 <th>Updated_at</th>
+                <th>Test Url</th>
             </tr>
         </thead>
         <tbody>
@@ -133,13 +161,36 @@ table.dataTable thead .sorting_desc {
             <tr>
                 <td>{{$data['ip']}}</td>
                 <td>{{$data['port']}}</td>
-                <td>{{$data['type']}}</td>
                 <td>{{$data['check_timestamp']}}</td>
                 <td>{{$data['created_at']}}</td>
                 <td>{{$data['updated_at']}}</td>
+                <td class="text-center" style="width: 200px;"><a onclick="testUrl({{$data['id']}}, '{{$data['ip']}}', '{{$data['port']}}')" class='btn btn-info btn-xs' href="#"><span class="icon-eye"></span> Test</a>
             </tr>
           @endforeach
         </tbody>
     </table>
+<div class="modal fade" id="modal-db-details" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Test Proxy</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" enctype="multipart/form-data" action="{{ route('testIP') }}">
+          {{ csrf_field() }}
+          <div id ="tbody-data"></div>
+          <br>
+          <center><input class="btn btn-primary"  type="submit" value="Test"></center>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 @endsection

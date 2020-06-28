@@ -34,7 +34,21 @@ class ProxyController extends Controller
         $proxiesData = $data['channels']['data'];
         $proxy_channels = DB::table('providers')->get();
 
-        return view('index', compact('proxiesData', 'proxy_channels'));
+
+
+        $channel = file_get_contents('http://localhost/proxy-provider/api/providers');
+        $data['channels'] = json_decode($channel, TRUE);
+        $providers = $data['channels']['data'];
+        $providersCount = count($providers);
+
+        $proxiesCount= count($proxiesData);
+
+        $testUrl = file_get_contents('http://localhost/proxy-provider/api/testUrl');
+        $data['channels'] = json_decode($testUrl, TRUE);
+        $testUrlData = $data['channels']['data'];
+        $testUrlCount= count($testUrlData);
+
+        return view('index', compact('proxiesData', 'proxy_channels', 'providersCount', 'proxiesCount', 'testUrlCount'));
 
     }
 
@@ -60,21 +74,22 @@ class ProxyController extends Controller
             if (!$flag) {
                 return "time_issue";
             }*/
+            date_default_timezone_set('Europe/Berlin');
+            $dateTime = date('Y-m-d H:i:s');
             if(empty($settings)){
                 $setting['provider_id'] = $proxyProvider;
-                $setting['request_time'] = date('Y-m-d H:i:s');
+                $setting['request_time'] = $dateTime;
                 \App\Models\Setting::create($setting);
             } else{
                 $flag = $this->calculateTimeDiffToUpdate($settings->request_time);
                 if (!$flag) {
-                    return "time_issue";
+                    \DB::table('providers')->where('id', $proxyProvider)->update(['last_attempt_date' => $dateTime]);
+                    return Redirect::back()->with('warning_message', 'Request Time is too short');
                 }
-
-                \DB::table('settings')->where('id', $proxyProvider)->update(['request_time' => date('Y-m-d H:i:s')]);
             }
 
-            /*lates request time*/
-            //\DB::table('providers')->where('id', $provider_id)->update(['last_attempt_date' => date('Y-m-d H:i:s')]);
+            \DB::table('settings')->where('provider_id', $proxyProvider)->update(['request_time' => $dateTime]);
+            \DB::table('providers')->where('id', $provider_id)->update(['last_update_date' => $dateTime, 'last_attempt_date' => $dateTime]);
 
             $provider = \DB::table('providers')->where('id', $proxyProvider)->first();
             if($provider->title == "XROXY Proxy Lists"){
@@ -107,63 +122,7 @@ class ProxyController extends Controller
                 $this->handleProxiAPI($array['data'], $provider);
             }
         }
-        return Redirect::back()->with('msg', 'The Message');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return Redirect::back()->with('success_message', 'Proxies Updated Successfully');
     }
 
     public function handleXRoxy($data, $provider) {
@@ -213,13 +172,17 @@ class ProxyController extends Controller
     public function createProxies($item, $provider) {
 
         foreach ($item['proxy'] as $item) {
+            if(!is_array($item) || empty($item)){
+                continue;
+            } else{
+                $rss['provider_id'] = $provider->id;
+                $rss['ip'] = $item['ip'];
+                $rss['port'] = $item['port'];
+                $rss['type'] = $item['type'];
+                $rss['check_timestamp'] = is_numeric($item['checked']) ? date("Y-m-d H:i:s", substr($item['checked'], 0, 10)) : $item['checked'];
 
-            $rss['provider_id'] = $provider->id;
-            $rss['ip'] = $item['ip'];
-            $rss['port'] = $item['port'];
-            $rss['type'] = $item['type'];
-            $rss['check_timestamp'] = is_numeric($item['checked']) ? date("Y-m-d H:i:s", substr($item['checked'], 0, 10)) : $item['checked'];
-            \App\Models\Proxy::create($rss);
+                \App\Models\Proxy::create($rss);
+            }
         }
     }
 
@@ -256,7 +219,7 @@ class ProxyController extends Controller
         $minutes += $since_start->h * 60;
         $minutes += $since_start->i;
 
-        if ($minutes < 1) {
+        if ($minutes < 10) {
             return false;
         }
         return true;

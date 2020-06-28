@@ -20,3 +20,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('proxies/{id?}', 'ProxyApiController@getProxies');
 Route::get('providers/{id?}', 'ProxyApiController@getProviders');
+Route::get('testUrl/{id?}', 'ProxyApiController@getTestUrl');
