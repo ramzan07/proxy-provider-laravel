@@ -64,12 +64,12 @@
     @endif
     @if(Session::has('warning_message'))
     <div class="alert alert-warning" id="message">
-        <strong>Warning!</strong> {{Session::get('warning_message')}}
+        <center><strong>Warning!</strong> {{Session::get('warning_message')}}</center>
     </div>   
     @endif
     @if(Session::has('error_message'))
     <div class="alert alert-danger" id="message">
-        <strong>Danger!</strong> {{Session::get('error_message')}}
+        <center><strong>Danger!</strong> {{Session::get('error_message')}}</center>
     </div>
 @endif
 @endsection
