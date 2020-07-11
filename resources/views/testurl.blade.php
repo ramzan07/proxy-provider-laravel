@@ -22,7 +22,11 @@
 <script src="{{asset('public/js/counter.js')}}"></script>
 
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
-
+<script type="text/javascript">
+    setTimeout(function() {
+    $('#message').fadeOut('slow');
+}, 3000); // <-- time in milliseconds
+</script>
 @endsection
 
 @section('page_heading')
@@ -100,7 +104,6 @@
             @endif
             <td class="text-center">{{$testurl['success_time']}}</a></td>
             <td class="text-center">{{substr(str_replace("T"," ",$testurl['updated_at']), 0, -8)}}</a></td>
-            <!-- {{substr($testurl['updated_at'], 0, strpos($testurl['updated_at'], ":"))}} -->
         </tr>
       @endforeach
     </tbody>
