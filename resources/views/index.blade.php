@@ -150,9 +150,9 @@ table.dataTable thead .sorting_desc {
             <tr>
                 <th>IP</th>
                 <th>Port</th>
-                <th>Last Check</th>
-                <th>Start date</th>
-                <th>Updated_at</th>
+                <th>Last Functionality Test</th>
+                <th>Last Found</th>
+                <th>Last Found</th>
                 <th>Test Url</th>
             </tr>
         </thead>

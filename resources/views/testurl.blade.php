@@ -69,7 +69,7 @@
     @endif
     @if(Session::has('error_message'))
     <div class="alert alert-danger" id="message">
-        <center><strong>Danger!</strong> {{Session::get('error_message')}}</center>
+        <center>{{Session::get('error_message')}}</center>
     </div>
 @endif
 @endsection

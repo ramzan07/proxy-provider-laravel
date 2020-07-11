@@ -82,9 +82,9 @@ class TestUrlController extends Controller
 		{
 			$status = $this->CheckSingleProxy($myip, $myport, $timeout, true, $socksOnly, $proxy_type, $url->testurl, $url->id);
 			if($status == true){
-				return redirect()->route('testurls')->with('success_message', 'Success');
+				return redirect()->route('testurls')->with('success_message', 'Test Passed');
 			} else {
-				return redirect()->route('testurls')->with('error_message', 'Failed');;
+				return redirect()->route('testurls')->with('error_message', 'Test Failed');;
 			}
 		}
 		else
