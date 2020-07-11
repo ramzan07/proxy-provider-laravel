@@ -161,7 +161,7 @@ table.dataTable thead .sorting_desc {
             <tr>
                 <td>{{$data['ip']}}</td>
                 <td>{{$data['port']}}</td>
-                <td>{{$data['check_timestamp']}}</td>
+                <td>{{!empty($data['last_fun_date']) ? $data['last_fun_date'] : "Last check not found"}}</td>
                 <td>{{$data['created_at']}}</td>
                 <td>{{$data['updated_at']}}</td>
                 <td class="text-center" style="width: 200px;"><a onclick="testUrl({{$data['id']}}, '{{$data['ip']}}', '{{$data['port']}}')" class='btn btn-info btn-xs' href="#"><span class="icon-eye"></span> Test</a>

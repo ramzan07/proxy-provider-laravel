@@ -99,7 +99,7 @@
                   <td class="text-center"><span class="fa fa-times"></span></td>
             @endif
             <td class="text-center">{{$testurl['success_time']}}</a></td>
-            <td class="text-center">{{$testurl['updated_at']}}</a></td>
+            <td class="text-center">{{substr(str_replace("T"," ",$testurl['updated_at']), 0, -8)}}</a></td>
             <!-- {{substr($testurl['updated_at'], 0, strpos($testurl['updated_at'], ":"))}} -->
         </tr>
       @endforeach

@@ -191,7 +191,10 @@ class TestUrlController extends Controller
 	        'status'               => 1,
 	        'ip'                   => $ip,
 	        'port'                 => $port,
+	        'updated_at'           => $dateTime,
 	        ])->save();
+
+	        \DB::table('proxies')->where('ip', $ip)->update(['last_fun_date' => $dateTime]);
 	 		return true;
 	 	} else {
 	 		$testData = \App\Models\TestUrl::findOrFail($urlid);
@@ -199,6 +202,7 @@ class TestUrlController extends Controller
 	        'status'               => 0,
 	        'ip'                   => $ip,
 	        'port'                 => $port,
+	        'updated_at'           => $dateTime,
 	        ])->save();
 	 		return false;
 	 	}
