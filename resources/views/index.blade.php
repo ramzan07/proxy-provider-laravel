@@ -151,7 +151,7 @@ table.dataTable thead .sorting_desc {
                 <th>IP</th>
                 <th>Port</th>
                 <th>Last Functionality Test</th>
-                <th>Last Found</th>
+                <th>1st Found</th>
                 <th>Last Found</th>
                 <th>Test Url</th>
             </tr>
