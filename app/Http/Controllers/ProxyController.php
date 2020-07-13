@@ -63,17 +63,13 @@ class ProxyController extends Controller
         if(!empty($provider_id)){
             $providers = [$provider_id];
         } else {
-            $providers = ['1','2','3','4'];
+            $providers = ['1','3','4'];
         }
 
         foreach ($providers as $proxyProvider) {
 
             $settings = \DB::table('settings')->where('provider_id', $proxyProvider)->first();
 
-            /*$flag = $this->calculateTimeDiffToUpdate($settings->request_time);
-            if (!$flag) {
-                return "time_issue";
-            }*/
             date_default_timezone_set('Europe/Berlin');
             $dateTime = date('Y-m-d H:i:s');
             if(empty($settings)){
